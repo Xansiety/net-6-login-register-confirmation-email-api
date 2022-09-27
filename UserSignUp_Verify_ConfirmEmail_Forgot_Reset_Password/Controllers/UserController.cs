@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
 
 namespace UserSignUpAPI.Controllers
 {
@@ -8,10 +11,12 @@ namespace UserSignUpAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IEmailService _emailService;
 
-        public UserController(DataContext context)
+        public UserController(DataContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
 
@@ -120,6 +125,16 @@ namespace UserSignUpAPI.Controllers
         }
 
 
+
+        // To create a email fake use : https://ethereal.email
+        // Install MailKit
+
+        [HttpPost(Name = "send-email")]
+        public IActionResult SendEmail(EmailDTO request)
+        {
+            _emailService.SendEmail(request);
+            return Ok();
+        }
 
 
     }
